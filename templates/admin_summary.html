@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Summary</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2><center>SUMMARY</center></h2>
+    <canvas id="summaryChart" width="600" height="400"></canvas>
+
+    <script>
+        const lotNames = {{ lot_names | tojson }};
+        const total = {{ total_spots | tojson }};
+        const available = {{ available_spots | tojson }};
+        const occupied = {{ occupied_spots | tojson }};
+
+        const ctx = document.getElementById('summaryChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: lotNames,
+                datasets: [
+                    {
+                        label: 'Available',
+                        data: available,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                    },
+                    {
+                        label: 'Occupied',
+                        data: occupied,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Available vs Occupied Spots per Lot'
+                    }
+                },
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

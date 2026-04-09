@@ -1,0 +1,118 @@
+openapi: 3.0.0
+info:
+  title: Vehicle Parking App API
+  version: 1.0.0
+  description: API documentation for the Vehicle Parking Management System
+
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User registered successfully
+
+  /login:
+    post:
+      summary: Log in an existing user
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+
+  /admin/lots:
+    get:
+      summary: View all parking lots (Admin)
+      responses:
+        '200':
+          description: List of all parking lots
+
+  /admin/lots/create:
+    post:
+      summary: Create a new parking lot (Admin)
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                location:
+                  type: string
+                capacity:
+                  type: integer
+      responses:
+        '200':
+          description: Parking lot created
+
+  /reserve/<int:spot_id>:
+    post:
+      summary: Reserve a parking spot
+      parameters:
+        - name: spot_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Spot reserved successfully
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+
+    ParkingLot:
+      type: object
+      properties:
+        id:
+          type: integer
+        location:
+          type: string
+        capacity:
+          type: integer
+
+    ParkingSpot:
+      type: object
+      properties:
+        id:
+          type: integer
+        lot_id:
+          type: integer
+        status:
+          type: string
+          enum: [A, O]
