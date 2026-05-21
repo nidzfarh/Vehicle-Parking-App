@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from models import db, User, Admin
 from database import create_admin
-
+web: gunicorn app:app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ko-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///parking.db'
