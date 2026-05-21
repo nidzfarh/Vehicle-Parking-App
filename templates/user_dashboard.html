@@ -1,31 +1,167 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>User Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <a href="{{ url_for('logout') }}" class="btn btn-danger float-end">Logout</a>
+{% extends "base.html" %}
 
-</head>
-<body class="p-5">
-    <h2 class="mb-4">Welcome, {{ current_user.username }}!</h2>
+{% block content %}
 
-    {% if reservation %}
-        <div class="alert alert-info">
-            <h4>You have reserved Spot {{ reservation.spot.id }}</h4>
-            <p>Lot: {{ reservation.spot.lot.prime_location_name }}</p>
-            <p>Start time: {{ reservation.start_time }}</p>
-            <a href="{{ url_for('release_spot') }}" class="btn btn-danger mt-2">Release Spot</a>
+<div class="d-flex justify-content-between align-items-center mb-5">
+
+    <div>
+        <h1 class="fw-bold">
+            Welcome, {{ current_user.username }} 👋
+        </h1>
+
+        <p class="text-secondary">
+            Reserve and manage your parking spots easily
+        </p>
+    </div>
+
+</div>
+
+{% if reservation %}
+
+<div class="glass-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-success">
+                Active Reservation
+            </h2>
+
+            <p class="text-secondary">
+                Your parking spot is currently active
+            </p>
         </div>
-    {% else %}
-        <h4>Reserve a Parking Spot</h4>
-        <form method="POST" class="mb-4">
-            <select name="lot_id" class="form-select mb-2" required>
+
+        <div class="display-5">
+            🚗
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-3">
+
+            <div class="p-4 rounded-4 bg-success bg-opacity-25">
+
+                <small class="text-secondary">
+                    Spot Number
+                </small>
+
+                <h3 class="mt-2">
+                    {{ reservation.spot.id }}
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+
+            <div class="p-4 rounded-4 bg-info bg-opacity-25">
+
+                <small class="text-secondary">
+                    Parking Lot
+                </small>
+
+                <h5 class="mt-2">
+                    {{ reservation.spot.lot.prime_location_name }}
+                </h5>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+
+            <div class="p-4 rounded-4 bg-warning bg-opacity-25">
+
+                <small class="text-secondary">
+                    Start Time
+                </small>
+
+                <h6 class="mt-2">
+                    {{ reservation.start_time }}
+                </h6>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <a 
+        href="{{ url_for('release_spot') }}"
+        class="btn btn-danger rounded-pill px-4 mt-4"
+    >
+        Release Spot
+    </a>
+
+</div>
+
+{% else %}
+
+<div class="glass-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold">
+                Reserve Parking Spot
+            </h2>
+
+            <p class="text-secondary">
+                Book the first available parking space instantly
+            </p>
+        </div>
+
+        <div class="display-5">
+            🅿️
+        </div>
+
+    </div>
+
+    <form method="POST">
+
+        <div class="mb-4">
+
+            <label class="form-label mb-3">
+                Select Parking Lot
+            </label>
+
+            <select 
+                name="lot_id"
+                class="form-select form-control"
+                required
+            >
+
                 {% for lot in lots %}
-                    <option value="{{ lot.id }}">{{ lot.prime_location_name }} - ₹{{ lot.price }}/hr</option>
+
+                    <option value="{{ lot.id }}">
+
+                        {{ lot.prime_location_name }}
+                        —
+                        ₹{{ lot.price }}/hr
+
+                    </option>
+
                 {% endfor %}
+
             </select>
-            <button class="btn btn-success" type="submit">Book First Available Spot</button>
-        </form>
-    {% endif %}
-</body>
-</html>
+
+        </div>
+
+        <button 
+            class="btn btn-success rounded-pill px-5"
+            type="submit"
+        >
+            Book Parking Spot
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

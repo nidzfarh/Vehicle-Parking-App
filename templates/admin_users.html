@@ -1,31 +1,143 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Manage Users</h2>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Username</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for user in users %}
-    <tr>
-      <td>{{ user.id }}</td>
-      <td>{{ user.username }}</td>
-      <td>
-        {% if user.username != 'admin' %}
-        <a href="{{ url_for('delete_user', user_id=user.id) }}" class="btn btn-danger btn-sm">Delete</a>
-        {% else %}
-        <em>Superuser</em>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="d-flex justify-content-between align-items-center mb-5">
 
-<a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    <div>
+        <h1 class="fw-bold">
+            User Management 👥
+        </h1>
+
+        <p class="text-secondary">
+            Manage registered users and system access
+        </p>
+    </div>
+
+    <a 
+        href="{{ url_for('admin_dashboard') }}"
+        class="btn btn-outline-light rounded-pill px-4"
+    >
+        Back to Dashboard
+    </a>
+
+</div>
+
+<div class="glass-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h3 class="fw-bold">
+            Registered Users
+        </h3>
+
+        <span class="badge bg-info fs-6 px-3 py-2">
+            {{ users|length }} Users
+        </span>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead>
+
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for user in users %}
+
+                <tr>
+
+                    <td>
+                        #{{ user.id }}
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div 
+                                class="rounded-circle d-flex align-items-center justify-content-center"
+                                style="
+                                    width:45px;
+                                    height:45px;
+                                    background:rgba(59,130,246,0.2);
+                                    font-weight:bold;
+                                "
+                            >
+                                {{ user.username[0].upper() }}
+                            </div>
+
+                            <div>
+                                <strong>
+                                    {{ user.username }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        {% if user.username == 'admin' %}
+
+                            <span class="badge bg-warning text-dark px-3 py-2">
+                                Administrator
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-success px-3 py-2">
+                                Active User
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td class="text-end">
+
+                        {% if user.username != 'admin' %}
+
+                        <a 
+                            href="{{ url_for('delete_user', user_id=user.id) }}"
+                            class="btn btn-danger rounded-pill px-4"
+                            onclick="return confirm('Delete this user?');"
+                        >
+                            Delete
+                        </a>
+
+                        {% else %}
+
+                        <span class="text-secondary">
+                            Protected Account
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
 {% endblock %}

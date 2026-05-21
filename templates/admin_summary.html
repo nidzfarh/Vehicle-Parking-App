@@ -1,58 +1,188 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Summary</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <h2><center>SUMMARY</center></h2>
-    <canvas id="summaryChart" width="600" height="400"></canvas>
+{% extends "base.html" %}
 
-    <script>
-        const lotNames = {{ lot_names | tojson }};
-        const total = {{ total_spots | tojson }};
-        const available = {{ available_spots | tojson }};
-        const occupied = {{ occupied_spots | tojson }};
+{% block content %}
 
-        const ctx = document.getElementById('summaryChart').getContext('2d');
+<div class="d-flex justify-content-between align-items-center mb-5">
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: lotNames,
-                datasets: [
-                    {
-                        label: 'Available',
-                        data: available,
-                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                    },
-                    {
-                        label: 'Occupied',
-                        data: occupied,
-                        backgroundColor: 'rgba(255, 99, 132, 0.7)'
-                    }
-                ]
-            },
-            options: {
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Available vs Occupied Spots per Lot'
-                    }
+    <div>
+        <h1 class="fw-bold">
+            Parking Analytics Dashboard 📊
+        </h1>
+
+        <p class="text-secondary">
+            Monitor parking utilization and occupancy statistics
+        </p>
+    </div>
+
+    <a 
+        href="{{ url_for('admin_dashboard') }}"
+        class="btn btn-outline-light rounded-pill px-4"
+    >
+        Back to Dashboard
+    </a>
+
+</div>
+
+<!-- Stats Cards -->
+
+<div class="row mb-5">
+
+    <div class="col-md-4 mb-4">
+
+        <div class="glass-card text-center">
+
+            <h6 class="text-secondary mb-3">
+                Total Parking Lots
+            </h6>
+
+            <h1 class="display-4 text-info fw-bold">
+                {{ lot_names|length }}
+            </h1>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-4">
+
+        <div class="glass-card text-center">
+
+            <h6 class="text-secondary mb-3">
+                Total Parking Spots
+            </h6>
+
+            <h1 class="display-4 text-success fw-bold">
+                {{ total_spots | sum }}
+            </h1>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-4">
+
+        <div class="glass-card text-center">
+
+            <h6 class="text-secondary mb-3">
+                Occupied Spots
+            </h6>
+
+            <h1 class="display-4 text-danger fw-bold">
+                {{ occupied_spots | sum }}
+            </h1>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Chart Card -->
+
+<div class="glass-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h3 class="fw-bold">
+                Occupancy Overview
+            </h3>
+
+            <p class="text-secondary">
+                Available vs occupied parking spots across all lots
+            </p>
+        </div>
+
+        <div class="display-6">
+            📈
+        </div>
+
+    </div>
+
+    <canvas id="summaryChart" height="110"></canvas>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    const lotNames = {{ lot_names | tojson }};
+    const total = {{ total_spots | tojson }};
+    const available = {{ available_spots | tojson }};
+    const occupied = {{ occupied_spots | tojson }};
+
+    const ctx = document.getElementById('summaryChart').getContext('2d');
+
+    new Chart(ctx, {
+
+        type: 'bar',
+
+        data: {
+
+            labels: lotNames,
+
+            datasets: [
+
+                {
+                    label: 'Available Spots',
+                    data: available,
+                    backgroundColor: 'rgba(34,197,94,0.8)',
+                    borderRadius: 10
                 },
-                responsive: true,
-                scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        stacked: true,
-                        beginAtZero: true
+
+                {
+                    label: 'Occupied Spots',
+                    data: occupied,
+                    backgroundColor: 'rgba(239,68,68,0.8)',
+                    borderRadius: 10
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+                    labels: {
+                        color: 'white'
                     }
                 }
+
+            },
+
+            scales: {
+
+                x: {
+                    ticks: {
+                        color: 'white'
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.05)'
+                    }
+                },
+
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: 'white'
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.05)'
+                    }
+                }
+
             }
-        });
-    </script>
-</body>
-</html>
+
+        }
+
+    });
+
+</script>
+
+{% endblock %}
